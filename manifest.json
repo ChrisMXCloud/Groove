@@ -1,0 +1,22 @@
+{
+  "name": "Groove Player Plus",
+  "short_name": "Groove Player+",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#FFF",
+  "theme_color": "#F1F1F1",
+  "description": "Ahora tu reproductor esta en esta APP, solo recuerda que necesitas internet.",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
