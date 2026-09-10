@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Groove Player+</title>
+  <title>XtremeSound Play</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#00ffff">
-  <link rel="icon" href="favicon.png" type="image/x-icon">
+  <link rel="icon" href="https://chrismxcloud.github.io/Groove/XS.png" type="image/x-icon">
   <link rel="manifest" href="manifest.json">
   <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
 <style>
@@ -42,8 +42,8 @@ body.has-cover::before{
   flex: 1;
   display: flex;
   flex-direction: row;
-  justify-content: center;  /* reproductor centrado horizontalmente */
-  align-items: center;      /* <-- centrado verticalmente */
+  justify-content: center;
+  align-items: center;
   padding: 20px;
   gap: 20px;
 }
@@ -71,7 +71,7 @@ body.has-cover::before{
 .controls{
   display:flex;
   justify-content:center;
-  gap:15px; /* <- espacio entre botones */
+  gap:15px;
   flex-wrap:wrap;
   margin-bottom:15px;
 }
@@ -220,18 +220,16 @@ function loadTrack(index){
   cover.style.backgroundImage=file.cover?`url(${file.cover})`:'url("https://via.placeholder.com/280x280?text=Sin+Portada")';
   cover.classList.remove('playing');
 
-  // 🟦 ACTUALIZAR MEDIA SESSION
   if ('mediaSession' in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: file.title,
       artist: file.artist,
-      album: "Reproductor MiChris",
+      album: "XtremeSound Play",
       artwork: [
         { src: file.cover || "https://via.placeholder.com/512?text=Sin+Portada", sizes: '512x512', type: 'image/jpeg' }
       ]
     });
 
-    // Controles del mini reproductor
     navigator.mediaSession.setActionHandler('play', () => playTrack());
     navigator.mediaSession.setActionHandler('pause', () => pauseTrack());
     navigator.mediaSession.setActionHandler('previoustrack', () => {
@@ -272,7 +270,6 @@ player.addEventListener('ended',()=>{
   }
 });
 
-// Seleccionar carpeta
 selectFolderBtn.addEventListener('click',()=>{ folderInput.click(); });
 folderInput.addEventListener('change',()=>{
   playlist=Array.from(folderInput.files)
@@ -282,8 +279,7 @@ folderInput.addEventListener('change',()=>{
   if(playlist.length){ currentIndex=0; loadTrack(0); playTrack(); }
   updatePlaylistUI();
 });
-
-// Actualizar lista
+  
 function updatePlaylistUI(){
   playlistContainer.innerHTML='';
   if(!playlist.length){
@@ -304,7 +300,6 @@ function updatePlaylistUI(){
   });
 }
 
-// Leer metadatos y portada
 folderInput.addEventListener('change',()=>{
   playlist.forEach((song,index)=>{
     jsmediatags.read(song.file,{
