@@ -8,5 +8,4 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
-  // Puedes manejar caché aquí si quieres
 });
