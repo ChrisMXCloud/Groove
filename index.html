@@ -4,321 +4,1982 @@
   <meta charset="UTF-8">
   <title>XtremeSound Play</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#00ffff">
+  <meta name="theme-color" content="#000000">
+
   <link rel="icon" href="XS.png" type="image/x-icon">
   <link rel="manifest" href="manifest.json">
+
   <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
+
 <style>
+
 :root {
-  --bg-color: #111;
+  --bg-color: #000;
+  --bg-color-2: #000;
   --text-color: #fff;
   --accent-color: #fff;
-  --bg-secondary: #222;
+  --bg-secondary: #000;
+  --cover-background: none;
 }
+
+* {
+  box-sizing: border-box;
+}
+
 body {
-  margin:0;
-  font-family:'Segoe UI',sans-serif;
-  background:linear-gradient(135deg,var(--bg-color),var(--bg-secondary));
-  color:var(--text-color);
-  height:100vh;
-  display:flex;
-  overflow:hidden;
-  transition:background 1.5s ease,color 0.5s ease;
-}
-body.has-cover::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background-size:cover;
-  background-position:center;
-  background-repeat:no-repeat;
-  opacity:0.3;
-  filter:blur(30px);
-  z-index:-1;
-  pointer-events:none;
-  transition:background-image 1.5s ease-in-out;
-}
-.main {
-  flex: 1;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+
+  background:
+    linear-gradient(
+      135deg,
+      var(--bg-color),
+      var(--bg-color-2)
+    );
+
+  color: var(--text-color);
+
+  height: 100vh;
   display: flex;
+  overflow: hidden;
+
+  transition:
+    background 1.5s ease,
+    color 0.5s ease;
+}
+
+
+/* =====================================================
+   FONDO DIFUMINADO DE LA PORTADA
+===================================================== */
+
+body.has-cover::before {
+
+  content: "";
+
+  position: fixed;
+
+  inset: 0;
+
+  background-image: var(--cover-background);
+
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  opacity: 0.18;
+
+  filter: blur(50px);
+
+  z-index: -1;
+
+  pointer-events: none;
+
+  transition:
+    background-image 1.5s ease-in-out,
+    opacity 1.5s ease;
+
+}
+
+
+/* =====================================================
+   CONTENIDO PRINCIPAL
+===================================================== */
+
+.main {
+
+  flex: 1;
+
+  display: flex;
+
   flex-direction: row;
+
   justify-content: center;
+
   align-items: center;
+
   padding: 20px;
+
   gap: 20px;
+
 }
-.now-playing{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  width:350px;
+
+
+/* =====================================================
+   REPRODUCTOR
+===================================================== */
+
+.now-playing {
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  width: 350px;
+
 }
-.cover{
-  width:280px;
-  height:280px;
-  background:#444;
-  border-radius:15px;
-  background-size:cover;
-  background-position:center;
-  margin-bottom:20px;
-  box-shadow:0 0 25px var(--accent-color);
-  transition: all 0.5s ease;
+
+
+/* =====================================================
+   PORTADA
+===================================================== */
+
+.cover {
+
+  width: 280px;
+  height: 280px;
+
+  background: #000;
+
+  border-radius: 15px;
+
+  background-size: cover;
+
+  background-position: center;
+
+  margin-bottom: 20px;
+
+  box-shadow:
+    0 0 25px rgba(255,255,255,0.35);
+
+  transition:
+    all 0.5s ease;
+
 }
-.cover.playing{animation: zoomInOut 3s ease infinite;}
-@keyframes zoomInOut{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
-.track-title{font-size:26px;font-weight:bold;margin-bottom:5px;text-align:center;text-shadow:0 0 10px var(--accent-color);}
-.track-artist{font-size:16px;color:#aaa;margin-bottom:15px;text-align:center;text-shadow:0 0 6px var(--accent-color);}
-.controls{
-  display:flex;
-  justify-content:center;
-  gap:15px;
-  flex-wrap:wrap;
-  margin-bottom:15px;
+
+.cover.playing {
+
+  animation:
+    zoomInOut 3s ease infinite;
+
 }
-.controls button{
-  font-size:26px;
-  background:linear-gradient(145deg,#333,#111);
-  border:none;
-  border-radius:12px;
-  color:var(--text-color);
-  cursor:pointer;
-  padding:12px 18px;
-  box-shadow:4px 4px 8px rgba(0,0,0,0.5),-4px -4px 8px rgba(255,255,255,0.05);
-  transition:all 0.3s ease;
-}
-.controls button:hover{
-  background:linear-gradient(145deg,#555,#222);
-  color:var(--accent-color);
-  transform:scale(1.1);
-}
-.controls button:active{
-  transform:scale(0.95);
-  box-shadow:inset 2px 2px 6px rgba(0,0,0,0.5), inset -2px -2px 6px rgba(255,255,255,0.05);
-}
-.special-btn{
-  font-size:16px;
-  background:linear-gradient(145deg,#222,#000);
-  border:none;
-  border-radius:12px;
-  padding:12px 20px;
-  color:#00ffff;
-  cursor:pointer;
-  box-shadow:4px 4px 8px rgba(0,0,0,0.5),-4px -4px 8px rgba(0,255,255,0.2);
-  transition:all 0.3s ease;
-}
-.special-btn:hover{
-  background:linear-gradient(145deg,#00ffff,#003333);
-  transform:scale(1.05);
-  color:#fff;
-  box-shadow:2px 2px 8px rgba(0,0,0,0.6),-2px -2px 8px rgba(0,255,255,0.3);
-}
-.special-btn:active{
-  transform:scale(0.95);
-}
-.folder-buttons{
-  display:flex;
-  flex-direction:column;
-  gap:12px;
-  margin-top:10px;
-  align-items:center;
-}
-#playlistContainer{
-  position:absolute;
-  right:20px;
-  top:20px;
-  bottom:20px;
-  width:320px;
-  background:var(--bg-secondary);
-  border-radius:12px;
-  padding:10px;
-  overflow-y:auto;
-}
-.playlist-item{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:6px 4px;
-  border-radius:8px;
-  transition:0.3s;
-  cursor:pointer;
-}
-.playlist-item:hover{background:rgba(0,255,255,0.2);}
-.playlist-item.active{background:rgba(0,255,255,0.4);}
-.playlist-item img{width:40px;height:40px;border-radius:6px;object-fit:cover;}
-.playlist-item .text{display:flex;flex-direction:column;font-size:14px;overflow:hidden;}
-.playlist-item .text .song-title{font-weight:bold;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.playlist-item .text .song-artist{color:#aaa;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-@media (max-width:1000px){
-  #playlistContainer{
-    display:none;
+
+
+@keyframes zoomInOut {
+
+  0%, 100% {
+    transform: scale(1);
   }
+
+  50% {
+    transform: scale(1.05);
+  }
+
 }
+
+
+/* =====================================================
+   INFORMACIÓN DE LA CANCIÓN
+===================================================== */
+
+.track-title {
+
+  font-size: 26px;
+
+  font-weight: bold;
+
+  margin-bottom: 5px;
+
+  text-align: center;
+
+  text-shadow:
+    0 0 10px rgba(255,255,255,0.5);
+
+}
+
+
+.track-artist {
+
+  font-size: 16px;
+
+  color: #fff;
+
+  margin-bottom: 15px;
+
+  text-align: center;
+
+  text-shadow:
+    0 0 6px rgba(255,255,255,0.4);
+
+}
+
+
+/* =====================================================
+   CONTROLES
+===================================================== */
+
+.controls {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 15px;
+
+  flex-wrap: wrap;
+
+  margin-bottom: 15px;
+
+}
+
+
+.controls button {
+
+  width: 62px;
+  height: 58px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  font-size: 26px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #000,
+      #000
+    );
+
+  border: none;
+
+  border-radius: 12px;
+
+  color: #fff;
+
+  cursor: pointer;
+
+  padding: 12px;
+
+  box-shadow:
+    4px 4px 8px rgba(0,0,0,0.5),
+    -4px -4px 8px rgba(255,255,255,0.2);
+
+  transition:
+    all 0.3s ease;
+
+}
+
+
+.controls button img {
+
+  width: 30px;
+
+  height: 30px;
+
+  object-fit: contain;
+
+  display: block;
+
+  pointer-events: none;
+
+}
+
+
+.controls button:hover {
+
+  background:
+    linear-gradient(
+      145deg,
+      #fff,
+      #000
+    );
+
+  transform: scale(1.1);
+
+}
+
+
+.controls button:active {
+
+  transform: scale(0.95);
+
+  box-shadow:
+    inset 2px 2px 6px rgba(0,0,0,0.5),
+    inset -2px -2px 6px rgba(255,255,255,0.2);
+
+}
+
+
+/* =====================================================
+   BOTONES ESPECIALES
+===================================================== */
+
+.special-btn {
+
+  font-size: 16px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #000,
+      #000
+    );
+
+  border: none;
+
+  border-radius: 12px;
+
+  padding: 12px 20px;
+
+  color: #fff;
+
+  cursor: pointer;
+
+  box-shadow:
+    4px 4px 8px rgba(0,0,0,0.5),
+    -4px -4px 8px rgba(255,255,255,0.2);
+
+  transition:
+    all 0.3s ease;
+
+}
+
+
+.special-btn:hover {
+
+  background:
+    linear-gradient(
+      145deg,
+      #fff,
+      #000
+    );
+
+  transform: scale(1.05);
+
+  color: #fff;
+
+  box-shadow:
+    2px 2px 8px rgba(0,0,0,0.6),
+    -2px -2px 8px rgba(255,255,255,0.3);
+
+}
+
+
+.special-btn:active {
+
+  transform: scale(0.95);
+
+}
+
+
+.folder-buttons {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+
+  margin-top: 10px;
+
+  align-items: center;
+
+}
+
+
+/* =====================================================
+   PLAYLIST
+===================================================== */
+
+#playlistContainer {
+
+  position: absolute;
+
+  right: 20px;
+
+  top: 20px;
+
+  bottom: 20px;
+
+  width: 320px;
+
+  background: #000;
+
+  border-radius: 12px;
+
+  padding: 10px;
+
+  overflow-y: auto;
+
+  box-shadow:
+    0 0 15px rgba(255,255,255,0.15);
+
+}
+
+
+.playlist-item {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 6px 4px;
+
+  border-radius: 8px;
+
+  transition: 0.3s;
+
+  cursor: pointer;
+
+}
+
+
+.playlist-item:hover {
+
+  background:
+    rgba(255,255,255,0.2);
+
+}
+
+
+.playlist-item.active {
+
+  background:
+    rgba(255,255,255,0.4);
+
+}
+
+
+.playlist-item img {
+
+  width: 40px;
+
+  height: 40px;
+
+  border-radius: 6px;
+
+  object-fit: cover;
+
+}
+
+
+.playlist-item .text {
+
+  display: flex;
+
+  flex-direction: column;
+
+  font-size: 14px;
+
+  overflow: hidden;
+
+}
+
+
+.playlist-item .text .song-title {
+
+  font-weight: bold;
+
+  color: #fff;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+}
+
+
+.playlist-item .text .song-artist {
+
+  color: #fff;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1000px) {
+
+  #playlistContainer {
+    display: none;
+  }
+
+}
+
 </style>
 </head>
+
+
 <body>
-  <div class="main">
-    <div class="now-playing" id="nowPlaying">
-      <div class="cover" id="cover"></div>
-      <div class="track-title" id="title">Sin canción</div>
-      <div class="track-artist" id="artist">Unknown</div>
-      <div class="controls">
-        <button id="prev" title="Anterior">⏮️</button>
-        <button id="play" title="Reproducir/Pausar">▶️</button>
-        <button id="next" title="Siguiente">⏭️</button>
-        <button id="repeat" title="Repetir">OFF</button>
-      </div>
-      <div class="folder-buttons">
-        <button id="selectFolderBtn" class="special-btn">📂 Seleccionar Carpeta</button>
-        <input type="file" id="folderInput" webkitdirectory multiple style="display:none;">
-        <button id="installBtn" class="special-btn" style="display:none;">➕ Instalar App</button>
-      </div>
+
+<div class="main">
+
+  <div class="now-playing" id="nowPlaying">
+
+    <!-- PORTADA -->
+
+    <div
+      class="cover"
+      id="cover">
     </div>
-    <div id="playlistContainer">
-      <div style="text-align:center; color:#aaa;">No hay canciones seleccionadas</div>
+
+
+    <!-- TÍTULO -->
+
+    <div
+      class="track-title"
+      id="title">
+      Sin canción
     </div>
-    <audio id="player"></audio>
+
+
+    <!-- ARTISTA -->
+
+    <div
+      class="track-artist"
+      id="artist">
+      Unknown
+    </div>
+
+
+    <!-- CONTROLES -->
+
+    <div class="controls">
+
+      <button
+        id="prev"
+        title="Anterior">
+
+        <img
+          src="./complements/prev.png"
+          alt="Anterior">
+
+      </button>
+
+
+      <button
+        id="play"
+        title="Reproducir">
+
+        <img
+          src="./complements/play.png"
+          alt="Reproducir">
+
+      </button>
+
+
+      <button
+        id="next"
+        title="Siguiente">
+
+        <img
+          src="./complements/next.png"
+          alt="Siguiente">
+
+      </button>
+
+
+      <button
+        id="repeat"
+        title="Repetir">
+
+        <img
+          src="./complements/repeat-off.png"
+          alt="Repetición desactivada">
+
+      </button>
+
+    </div>
+
+
+    <!-- BOTONES DE CARPETA -->
+
+    <div class="folder-buttons">
+
+      <button
+        id="selectFolderBtn"
+        class="special-btn">
+
+    Seleccionar Carpeta
+
+      </button>
+
+
+      <input
+        type="file"
+        id="folderInput"
+        webkitdirectory
+        multiple
+        style="display:none;"
+      >
+
+
+      <button
+        id="installBtn"
+        class="special-btn"
+        style="display:none;">
+
+        ➕ Instalar App
+
+      </button>
+
+    </div>
+
   </div>
+
+
+  <!-- PLAYLIST -->
+
+  <div id="playlistContainer">
+
+    <div
+      style="text-align:center; color:#fff;">
+
+      No hay canciones seleccionadas
+
+    </div>
+
+  </div>
+
+
+  <audio id="player"></audio>
+
+</div>
+
+
 <script>
-const player=document.getElementById('player');
-const cover=document.getElementById('cover');
-const title=document.getElementById('title');
-const artist=document.getElementById('artist');
-const playBtn=document.getElementById('play');
-const nextBtn=document.getElementById('next');
-const prevBtn=document.getElementById('prev');
-const repeatBtn=document.getElementById('repeat');
-const folderInput=document.getElementById('folderInput');
-const selectFolderBtn=document.getElementById('selectFolderBtn');
-const playlistContainer=document.getElementById('playlistContainer');
 
-let playlist=[];
-let currentIndex=0;
-let isPlaying=false;
-let repeatMode='off';
+/* =====================================================
+   ELEMENTOS
+===================================================== */
 
-function playTrack(){
+const player =
+  document.getElementById('player');
+
+const cover =
+  document.getElementById('cover');
+
+const title =
+  document.getElementById('title');
+
+const artist =
+  document.getElementById('artist');
+
+const playBtn =
+  document.getElementById('play');
+
+const nextBtn =
+  document.getElementById('next');
+
+const prevBtn =
+  document.getElementById('prev');
+
+const repeatBtn =
+  document.getElementById('repeat');
+
+const folderInput =
+  document.getElementById('folderInput');
+
+const selectFolderBtn =
+  document.getElementById('selectFolderBtn');
+
+const playlistContainer =
+  document.getElementById('playlistContainer');
+
+
+/* =====================================================
+   RUTAS DE ICONOS
+===================================================== */
+
+const ICONS = {
+
+  prev:
+    './complements/prev.png',
+
+  play:
+    './complements/play.png',
+
+  pause:
+    './complements/pause.png',
+
+  next:
+    './complements/next.png',
+
+  repeat:
+    './complements/repeat.png',
+
+  repeatOne:
+    './complements/repeat-one.png',
+
+  repeatOff:
+    './complements/repeat-off.png'
+
+};
+
+
+/* =====================================================
+   ESTADO
+===================================================== */
+
+let playlist = [];
+
+let currentIndex = 0;
+
+let isPlaying = false;
+
+let repeatMode = 'off';
+
+
+/* =====================================================
+   CAMBIAR ICONO
+===================================================== */
+
+function setButtonIcon(button, src, alt) {
+
+  const img =
+    button.querySelector('img');
+
+  if (!img) return;
+
+  img.src = src;
+
+  img.alt = alt;
+
+}
+
+
+/* =====================================================
+   OBTENER COLORES DE LA PORTADA
+===================================================== */
+
+function getCoverColors(imageURL) {
+
+  return new Promise((resolve) => {
+
+    const img =
+      new Image();
+
+    /*
+      Las imágenes data: no necesitan
+      CORS. Para otros tipos de URL
+      intentamos utilizar CORS.
+    */
+
+    if (
+      !imageURL.startsWith('data:')
+    ) {
+
+      img.crossOrigin = 'Anonymous';
+
+    }
+
+
+    img.onload = function() {
+
+      try {
+
+        const canvas =
+          document.createElement(
+            'canvas'
+          );
+
+        const ctx =
+          canvas.getContext(
+            '2d',
+            {
+              willReadFrequently: true
+            }
+          );
+
+
+        const size = 100;
+
+        canvas.width = size;
+
+        canvas.height = size;
+
+
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          size,
+          size
+        );
+
+
+        const imageData =
+          ctx.getImageData(
+            0,
+            0,
+            size,
+            size
+          ).data;
+
+
+        let r = 0;
+
+        let g = 0;
+
+        let b = 0;
+
+        let count = 0;
+
+
+        /*
+          Promedio de los píxeles.
+        */
+
+        for (
+          let i = 0;
+          i < imageData.length;
+          i += 4
+        ) {
+
+          const red =
+            imageData[i];
+
+          const green =
+            imageData[i + 1];
+
+          const blue =
+            imageData[i + 2];
+
+          const alpha =
+            imageData[i + 3];
+
+
+          if (alpha < 100)
+            continue;
+
+
+          r += red;
+
+          g += green;
+
+          b += blue;
+
+          count++;
+
+        }
+
+
+        if (!count) {
+
+          resolve({
+            color1: '#000000',
+            color2: '#000000'
+          });
+
+          return;
+
+        }
+
+
+        r =
+          Math.round(
+            r / count
+          );
+
+        g =
+          Math.round(
+            g / count
+          );
+
+        b =
+          Math.round(
+            b / count
+          );
+
+
+        /*
+          Color principal.
+        */
+
+        const color1 =
+          `rgb(${r},${g},${b})`;
+
+
+        /*
+          Color secundario oscuro.
+        */
+
+        const r2 =
+          Math.max(
+            0,
+            Math.round(r * 0.45)
+          );
+
+        const g2 =
+          Math.max(
+            0,
+            Math.round(g * 0.45)
+          );
+
+        const b2 =
+          Math.max(
+            0,
+            Math.round(b * 0.45)
+          );
+
+
+        const color2 =
+          `rgb(${r2},${g2},${b2})`;
+
+
+        resolve({
+          color1,
+          color2
+        });
+
+
+      } catch (error) {
+
+        console.warn(
+          'No se pudieron obtener los colores de la portada:',
+          error
+        );
+
+
+        resolve({
+          color1: '#000000',
+          color2: '#000000'
+        });
+
+      }
+
+    };
+
+
+    img.onerror = function() {
+
+      resolve({
+        color1: '#000000',
+        color2: '#000000'
+      });
+
+    };
+
+
+    img.src = imageURL;
+
+  });
+
+}
+
+
+/* =====================================================
+   CAMBIAR FONDO DINÁMICO
+===================================================== */
+
+async function updateBackground(imageURL) {
+
+  /*
+    SIN PORTADA
+    ================================
+    Fondo completamente negro.
+  */
+
+  if (!imageURL) {
+
+    document.documentElement
+      .style
+      .setProperty(
+        '--bg-color',
+        '#000'
+      );
+
+
+    document.documentElement
+      .style
+      .setProperty(
+        '--bg-color-2',
+        '#000'
+      );
+
+
+    document.documentElement
+      .style
+      .setProperty(
+        '--cover-background',
+        'none'
+      );
+
+
+    document.body
+      .classList
+      .remove('has-cover');
+
+
+    document.body.style.background =
+      '#000';
+
+
+    return;
+
+  }
+
+
+  /*
+    OBTENER COLORES
+  */
+
+  const colors =
+    await getCoverColors(
+      imageURL
+    );
+
+
+  /*
+    Aplicar colores al fondo.
+  */
+
+  document.documentElement
+    .style
+    .setProperty(
+      '--bg-color',
+      colors.color1
+    );
+
+
+  document.documentElement
+    .style
+    .setProperty(
+      '--bg-color-2',
+      colors.color2
+    );
+
+
+  /*
+    Portada para el fondo
+    difuminado.
+  */
+
+  document.documentElement
+    .style
+    .setProperty(
+      '--cover-background',
+      `url("${imageURL}")`
+    );
+
+
+  /*
+    Activar fondo de portada.
+  */
+
+  document.body
+    .classList
+    .add('has-cover');
+
+
+  /*
+    Degradado dinámico.
+  */
+
+  document.body.style.background =
+    `linear-gradient(
+      135deg,
+      ${colors.color1},
+      ${colors.color2}
+    )`;
+
+}
+
+
+/* =====================================================
+   REPRODUCIR
+===================================================== */
+
+function playTrack() {
+
   player.play();
-  isPlaying=true;
-  playBtn.textContent='⏸️';
-  cover.classList.add('playing');
+
+  isPlaying = true;
+
+
+  setButtonIcon(
+    playBtn,
+    ICONS.pause,
+    'Pausar'
+  );
+
+
+  cover.classList.add(
+    'playing'
+  );
+
+
   updatePlaylistUI();
-}
-function pauseTrack(){
-  player.pause();
-  isPlaying=false;
-  playBtn.textContent='▶️';
-  cover.classList.remove('playing');
-  updatePlaylistUI();
+
 }
 
-function loadTrack(index){
-  const file=playlist[index];
-  const url=URL.createObjectURL(file.file);
-  player.src=url;
-  title.textContent=file.title;
-  artist.textContent=file.artist;
-  cover.style.backgroundImage=file.cover?`url(${file.cover})`:'url("https://via.placeholder.com/280x280?text=Sin+Portada")';
-  cover.classList.remove('playing');
+
+/* =====================================================
+   PAUSAR
+===================================================== */
+
+function pauseTrack() {
+
+  player.pause();
+
+  isPlaying = false;
+
+
+  setButtonIcon(
+    playBtn,
+    ICONS.play,
+    'Reproducir'
+  );
+
+
+  cover.classList.remove(
+    'playing'
+  );
+
+
+  updatePlaylistUI();
+
+}
+
+
+/* =====================================================
+   CARGAR CANCIÓN
+===================================================== */
+
+function loadTrack(index) {
+
+  const file =
+    playlist[index];
+
+
+  if (!file)
+    return;
+
+
+  /*
+    URL del audio.
+  */
+
+  const url =
+    URL.createObjectURL(
+      file.file
+    );
+
+
+  player.src = url;
+
+
+  /*
+    Información.
+  */
+
+  title.textContent =
+    file.title;
+
+
+  artist.textContent =
+    file.artist;
+
+
+  /*
+    PORTADA
+  */
+
+  if (file.cover) {
+
+    cover.style.backgroundImage =
+      `url("${file.cover}")`;
+
+
+    updateBackground(
+      file.cover
+    );
+
+  }
+
+  else {
+
+    /*
+      SIN PORTADA:
+      negro sólido.
+    */
+
+    cover.style.backgroundImage =
+      'none';
+
+
+    updateBackground(
+      null
+    );
+
+  }
+
+
+  cover.classList.remove(
+    'playing'
+  );
+
+
+  /*
+    MEDIA SESSION
+  */
 
   if ('mediaSession' in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: file.title,
-      artist: file.artist,
-      album: "XtremeSound Play",
-      artwork: [
-        { src: file.cover || "https://via.placeholder.com/512?text=Sin+Portada", sizes: '512x512', type: 'image/jpeg' }
-      ]
-    });
 
-    navigator.mediaSession.setActionHandler('play', () => playTrack());
-    navigator.mediaSession.setActionHandler('pause', () => pauseTrack());
-    navigator.mediaSession.setActionHandler('previoustrack', () => {
-      if (currentIndex > 0) {
-        currentIndex--;
-        loadTrack(currentIndex);
-        playTrack();
-      }
-    });
-    navigator.mediaSession.setActionHandler('nexttrack', () => {
-      if (currentIndex + 1 < playlist.length) {
-        currentIndex++;
-        loadTrack(currentIndex);
-        playTrack();
-      }
-    });
-  }
-}
+    navigator.mediaSession.metadata =
+      new MediaMetadata({
 
-playBtn.addEventListener('click',()=>{ isPlaying?pauseTrack():playTrack(); });
-nextBtn.addEventListener('click',()=>{ if(currentIndex+1<playlist.length){ currentIndex++; loadTrack(currentIndex); playTrack(); } });
-prevBtn.addEventListener('click',()=>{ if(currentIndex>0){ currentIndex--; loadTrack(currentIndex); playTrack(); } });
+        title:
+          file.title,
 
-repeatBtn.addEventListener('click',()=>{
-  if(repeatMode==='off'){ repeatMode='all'; repeatBtn.textContent='🔁'; repeatBtn.style.color='#00ffff'; }
-  else if(repeatMode==='all'){ repeatMode='one'; repeatBtn.textContent='🔂'; repeatBtn.style.color='#00ffff'; }
-  else{ repeatMode='off'; repeatBtn.textContent='OFF'; repeatBtn.style.color='#fff'; }
-});
+        artist:
+          file.artist,
 
-player.addEventListener('ended',()=>{
-  switch(repeatMode){
-    case 'one': player.currentTime=0; playTrack(); break;
-    case 'all': currentIndex=(currentIndex+1)%playlist.length; loadTrack(currentIndex); playTrack(); break;
-    case 'off':
-      if(currentIndex+1<playlist.length){ currentIndex++; loadTrack(currentIndex); playTrack(); }
-      else pauseTrack();
-    break;
-  }
-});
+        album:
+          'XtremeSound Play',
 
-selectFolderBtn.addEventListener('click',()=>{ folderInput.click(); });
-folderInput.addEventListener('change',()=>{
-  playlist=Array.from(folderInput.files)
-    .filter(f=>f.type.startsWith('audio/'))
-    .map(f=>({file:f,title:f.name,artist:"Desconocido",cover:'https://via.placeholder.com/40x40?text=?'}));
-  playlist.sort((a,b)=>a.title.localeCompare(b.title));
-  if(playlist.length){ currentIndex=0; loadTrack(0); playTrack(); }
-  updatePlaylistUI();
-});
-  
-function updatePlaylistUI(){
-  playlistContainer.innerHTML='';
-  if(!playlist.length){
-    playlistContainer.innerHTML='<div style="text-align:center; color:#aaa;">No hay canciones seleccionadas</div>';
-    return;
-  }
-  playlist.forEach((song,i)=>{
-    const div=document.createElement('div');
-    div.className='playlist-item'+(i===currentIndex?' active':'');
-    const img=document.createElement('img'); img.src=song.cover;
-    const text=document.createElement('div'); text.className='text';
-    const t=document.createElement('div'); t.className='song-title'; t.textContent=song.title;
-    const a=document.createElement('div'); a.className='song-artist'; a.textContent=song.artist;
-    text.appendChild(t); text.appendChild(a);
-    div.appendChild(img); div.appendChild(text);
-    div.addEventListener('click',()=>{ currentIndex=i; loadTrack(i); playTrack(); });
-    playlistContainer.appendChild(div);
-  });
-}
+        artwork:
+          file.cover
+            ? [
+                {
+                  src:
+                    file.cover,
 
-folderInput.addEventListener('change',()=>{
-  playlist.forEach((song,index)=>{
-    jsmediatags.read(song.file,{
-      onSuccess:function(tag){
-        if(tag.tags.title) song.title=tag.tags.title;
-        if(tag.tags.artist) song.artist=tag.tags.artist;
-        if(tag.tags.picture){
-          let base64=""; 
-          for(let i=0;i<tag.tags.picture.data.length;i++) base64+=String.fromCharCode(tag.tags.picture.data[i]);
-          song.cover=`data:${tag.tags.picture.format};base64,${btoa(base64)}`;
-          if(index===currentIndex) cover.style.backgroundImage=`url(${song.cover})`;
+                  sizes:
+                    '512x512',
+
+                  type:
+                    'image/jpeg'
+                }
+              ]
+            : []
+
+      });
+
+
+    navigator.mediaSession.setActionHandler(
+      'play',
+      () => playTrack()
+    );
+
+
+    navigator.mediaSession.setActionHandler(
+      'pause',
+      () => pauseTrack()
+    );
+
+
+    navigator.mediaSession.setActionHandler(
+      'previoustrack',
+      () => {
+
+        if (
+          currentIndex > 0
+        ) {
+
+          currentIndex--;
+
+          loadTrack(
+            currentIndex
+          );
+
+          playTrack();
+
         }
-        updatePlaylistUI();
-      }
-    });
-  });
-});
 
-repeatBtn.textContent='OFF'; repeatBtn.style.color='#fff';
-    </script>
+      }
+    );
+
+
+    navigator.mediaSession.setActionHandler(
+      'nexttrack',
+      () => {
+
+        if (
+          currentIndex + 1 <
+          playlist.length
+        ) {
+
+          currentIndex++;
+
+          loadTrack(
+            currentIndex
+          );
+
+          playTrack();
+
+        }
+
+      }
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   BOTÓN PLAY / PAUSA
+===================================================== */
+
+playBtn.addEventListener(
+  'click',
+  () => {
+
+    if (isPlaying) {
+
+      pauseTrack();
+
+    }
+
+    else {
+
+      playTrack();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   SIGUIENTE
+===================================================== */
+
+nextBtn.addEventListener(
+  'click',
+  () => {
+
+    if (
+      currentIndex + 1 <
+      playlist.length
+    ) {
+
+      currentIndex++;
+
+      loadTrack(
+        currentIndex
+      );
+
+      playTrack();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   ANTERIOR
+===================================================== */
+
+prevBtn.addEventListener(
+  'click',
+  () => {
+
+    if (
+      currentIndex > 0
+    ) {
+
+      currentIndex--;
+
+      loadTrack(
+        currentIndex
+      );
+
+      playTrack();
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   REPETICIÓN
+===================================================== */
+
+repeatBtn.addEventListener(
+  'click',
+  () => {
+
+    /*
+      OFF → ALL
+    */
+
+    if (
+      repeatMode === 'off'
+    ) {
+
+      repeatMode = 'all';
+
+
+      setButtonIcon(
+        repeatBtn,
+        ICONS.repeat,
+        'Repetir todo'
+      );
+
+    }
+
+
+    /*
+      ALL → ONE
+    */
+
+    else if (
+      repeatMode === 'all'
+    ) {
+
+      repeatMode = 'one';
+
+
+      setButtonIcon(
+        repeatBtn,
+        ICONS.repeatOne,
+        'Repetir una'
+      );
+
+    }
+
+
+    /*
+      ONE → OFF
+    */
+
+    else {
+
+      repeatMode = 'off';
+
+
+      setButtonIcon(
+        repeatBtn,
+        ICONS.repeatOff,
+        'Repetición desactivada'
+      );
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   CANCIÓN TERMINADA
+===================================================== */
+
+player.addEventListener(
+  'ended',
+  () => {
+
+    switch (repeatMode) {
+
+
+      /*
+        REPETIR UNA
+      */
+
+      case 'one':
+
+        player.currentTime = 0;
+
+        playTrack();
+
+        break;
+
+
+      /*
+        REPETIR TODAS
+      */
+
+      case 'all':
+
+        currentIndex =
+          (
+            currentIndex + 1
+          ) %
+          playlist.length;
+
+
+        loadTrack(
+          currentIndex
+        );
+
+
+        playTrack();
+
+        break;
+
+
+      /*
+        SIN REPETICIÓN
+      */
+
+      case 'off':
+
+        if (
+          currentIndex + 1 <
+          playlist.length
+        ) {
+
+          currentIndex++;
+
+          loadTrack(
+            currentIndex
+          );
+
+          playTrack();
+
+        }
+
+        else {
+
+          pauseTrack();
+
+        }
+
+        break;
+
+    }
+
+  }
+);
+
+
+/* =====================================================
+   SELECCIONAR CARPETA
+===================================================== */
+
+selectFolderBtn.addEventListener(
+  'click',
+  () => {
+
+    folderInput.click();
+
+  }
+);
+
+
+/* =====================================================
+   CARGAR CARPETA
+===================================================== */
+
+folderInput.addEventListener(
+  'change',
+  () => {
+
+    playlist =
+      Array.from(
+        folderInput.files
+      )
+
+      .filter(
+        f =>
+          f.type.startsWith(
+            'audio/'
+          )
+      )
+
+      .map(
+        f => ({
+
+          file: f,
+
+          title: f.name,
+
+          artist:
+            'Desconocido',
+
+          /*
+            Todavía no sabemos
+            si tiene portada.
+          */
+
+          cover: null
+
+        })
+      );
+
+
+    /*
+      Orden alfabético.
+    */
+
+    playlist.sort(
+      (a,b) =>
+        a.title.localeCompare(
+          b.title
+        )
+    );
+
+
+    /*
+      Empezamos por la primera.
+    */
+
+    currentIndex = 0;
+
+
+    /*
+      Analizar metadata de cada
+      canción.
+    */
+
+    playlist.forEach(
+      (song,index) => {
+
+        jsmediatags.read(
+          song.file,
+          {
+
+            onSuccess:
+              function(tag) {
+
+
+                /*
+                  TÍTULO
+                */
+
+                if (
+                  tag.tags.title
+                ) {
+
+                  song.title =
+                    tag.tags.title;
+
+                }
+
+
+                /*
+                  ARTISTA
+                */
+
+                if (
+                  tag.tags.artist
+                ) {
+
+                  song.artist =
+                    tag.tags.artist;
+
+                }
+
+
+                /*
+                  PORTADA
+                */
+
+                if (
+                  tag.tags.picture
+                ) {
+
+                  let base64 = '';
+
+
+                  for (
+                    let i = 0;
+
+                    i <
+                    tag.tags.picture.data.length;
+
+                    i++
+                  ) {
+
+                    base64 +=
+                      String.fromCharCode(
+                        tag.tags.picture.data[i]
+                      );
+
+                  }
+
+
+                  song.cover =
+                    `data:${tag.tags.picture.format};base64,${btoa(base64)}`;
+
+
+                  /*
+                    Si es la canción actual,
+                    actualizar portada y fondo.
+                  */
+
+                  if (
+                    index === currentIndex
+                  ) {
+
+                    cover.style.backgroundImage =
+                      `url("${song.cover}")`;
+
+
+                    updateBackground(
+                      song.cover
+                    );
+
+                  }
+
+                }
+
+
+                updatePlaylistUI();
+
+              },
+
+
+            onError:
+              function() {
+
+                /*
+                  Sin metadata válida.
+                */
+
+                if (
+                  index === currentIndex
+                ) {
+
+                  updateBackground(
+                    null
+                  );
+
+                }
+
+
+                updatePlaylistUI();
+
+              }
+
+          }
+        );
+
+      }
+    );
+
+
+    /*
+      Si encontramos canciones,
+      cargar la primera.
+    */
+
+    if (
+      playlist.length
+    ) {
+
+      loadTrack(0);
+
+      playTrack();
+
+    }
+
+
+    updatePlaylistUI();
+
+  }
+);
+
+
+/* =====================================================
+   ACTUALIZAR PLAYLIST
+===================================================== */
+
+function updatePlaylistUI() {
+
+  playlistContainer.innerHTML =
+    '';
+
+
+  /*
+    Sin canciones.
+  */
+
+  if (
+    !playlist.length
+  ) {
+
+    playlistContainer.innerHTML =
+      '<div style="text-align:center; color:#fff;">No hay canciones seleccionadas</div>';
+
+    return;
+
+  }
+
+
+  /*
+    Crear cada canción.
+  */
+
+  playlist.forEach(
+    (song,i) => {
+
+      const div =
+        document.createElement(
+          'div'
+        );
+
+
+      div.className =
+        'playlist-item' +
+        (
+          i === currentIndex
+            ? ' active'
+            : ''
+        );
+
+
+      /*
+        IMAGEN
+      */
+
+      const img =
+        document.createElement(
+          'img'
+        );
+
+
+      if (
+        song.cover
+      ) {
+
+        img.src =
+          song.cover;
+
+      }
+
+      else {
+
+        /*
+          Cuadro negro cuando
+          no existe portada.
+        */
+
+        img.src =
+          'data:image/svg+xml,' +
+          encodeURIComponent(`
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="40"
+              height="40">
+
+              <rect
+                width="40"
+                height="40"
+                fill="#000"/>
+
+            </svg>
+          `);
+
+      }
+
+
+      /*
+        TEXTO
+      */
+
+      const text =
+        document.createElement(
+          'div'
+        );
+
+
+      text.className =
+        'text';
+
+
+      const t =
+        document.createElement(
+          'div'
+        );
+
+
+      t.className =
+        'song-title';
+
+
+      t.textContent =
+        song.title;
+
+
+      const a =
+        document.createElement(
+          'div'
+        );
+
+
+      a.className =
+        'song-artist';
+
+
+      a.textContent =
+        song.artist;
+
+
+      text.appendChild(t);
+
+      text.appendChild(a);
+
+      div.appendChild(img);
+
+      div.appendChild(text);
+
+
+      /*
+        CLICK
+      */
+
+      div.addEventListener(
+        'click',
+        () => {
+
+          currentIndex = i;
+
+          loadTrack(i);
+
+          playTrack();
+
+        }
+      );
+
+
+      playlistContainer.appendChild(
+        div
+      );
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   ESTADO INICIAL
+===================================================== */
+
+setButtonIcon(
+  playBtn,
+  ICONS.play,
+  'Reproducir'
+);
+
+
+setButtonIcon(
+  repeatBtn,
+  ICONS.repeatOff,
+  'Repetición desactivada'
+);
+
+
+/*
+  Fondo negro inicial.
+*/
+
+updateBackground(
+  null
+);
+
+</script>
+
 </body>
 </html>
