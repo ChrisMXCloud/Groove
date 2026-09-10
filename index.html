@@ -1,33 +1,79 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
   <meta charset="UTF-8">
+
   <title>XtremeSound Play</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#000000">
 
-  <link rel="icon" href="XS.png" type="image/x-icon">
-  <link rel="manifest" href="manifest.json">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <script src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js"></script>
+  <meta
+    name="theme-color"
+    content="#000000"
+  >
+
+  <link
+    rel="icon"
+    href="XS.png"
+    type="image/x-icon"
+  >
+
+  <link
+    rel="manifest"
+    href="manifest.json"
+  >
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/jsmediatags@3.9.7/dist/jsmediatags.min.js">
+  </script>
+
 
 <style>
 
+/* =====================================================
+   VARIABLES
+===================================================== */
+
 :root {
+
   --bg-color: #000;
+
   --bg-color-2: #000;
+
   --text-color: #fff;
+
   --accent-color: #fff;
+
   --bg-secondary: #000;
+
   --cover-background: none;
+
 }
+
+
+/* =====================================================
+   RESET
+===================================================== */
 
 * {
+
   box-sizing: border-box;
+
 }
 
+
+/* =====================================================
+   BODY
+===================================================== */
+
 body {
+
   margin: 0;
+
   font-family: 'Segoe UI', sans-serif;
 
   background:
@@ -40,17 +86,20 @@ body {
   color: var(--text-color);
 
   height: 100vh;
+
   display: flex;
+
   overflow: hidden;
 
   transition:
     background 1.5s ease,
     color 0.5s ease;
+
 }
 
 
 /* =====================================================
-   FONDO DIFUMINADO DE LA PORTADA
+   FONDO DIFUMINADO
 ===================================================== */
 
 body.has-cover::before {
@@ -61,10 +110,13 @@ body.has-cover::before {
 
   inset: 0;
 
-  background-image: var(--cover-background);
+  background-image:
+    var(--cover-background);
 
   background-size: cover;
+
   background-position: center;
+
   background-repeat: no-repeat;
 
   opacity: 0.18;
@@ -129,6 +181,7 @@ body.has-cover::before {
 .cover {
 
   width: 280px;
+
   height: 280px;
 
   background: #000;
@@ -147,7 +200,78 @@ body.has-cover::before {
   transition:
     all 0.5s ease;
 
+  position: relative;
+
+  overflow: hidden;
+
 }
+
+
+/* =====================================================
+   PORTADA REAL
+===================================================== */
+
+.cover.real-cover {
+
+  background-repeat: no-repeat;
+
+}
+
+
+/* =====================================================
+   VISUALIZADOR
+===================================================== */
+
+.visualizer {
+
+  position: absolute;
+
+  left: 0;
+
+  top: 0;
+
+  width: 100%;
+
+  height: 100%;
+
+  display: none;
+
+  pointer-events: none;
+
+}
+
+
+/* =====================================================
+   PORTADA IMPROVISADA
+===================================================== */
+
+.cover.no-cover {
+
+  background:
+    radial-gradient(
+      circle at center,
+      #222 0%,
+      #080808 45%,
+      #000 100%
+    );
+
+}
+
+
+/* =====================================================
+   VISUALIZADOR ACTIVO
+===================================================== */
+
+.cover.no-cover .visualizer {
+
+  display: block;
+
+}
+
+
+/* =====================================================
+   ANIMACIÓN DE PORTADA
+===================================================== */
 
 .cover.playing {
 
@@ -160,18 +284,22 @@ body.has-cover::before {
 @keyframes zoomInOut {
 
   0%, 100% {
+
     transform: scale(1);
+
   }
 
   50% {
+
     transform: scale(1.05);
+
   }
 
 }
 
 
 /* =====================================================
-   INFORMACIÓN DE LA CANCIÓN
+   INFORMACIÓN
 ===================================================== */
 
 .track-title {
@@ -228,6 +356,7 @@ body.has-cover::before {
 .controls button {
 
   width: 62px;
+
   height: 58px;
 
   display: flex;
@@ -508,106 +637,150 @@ body.has-cover::before {
 @media (max-width: 1000px) {
 
   #playlistContainer {
+
     display: none;
+
   }
 
 }
 
 </style>
+
 </head>
 
 
 <body>
 
+
 <div class="main">
 
-  <div class="now-playing" id="nowPlaying">
 
-    <!-- PORTADA -->
+  <div
+    class="now-playing"
+    id="nowPlaying"
+  >
+
+
+    <!-- =================================================
+         PORTADA
+    ================================================== -->
 
     <div
-      class="cover"
-      id="cover">
+      class="cover no-cover"
+      id="cover"
+    >
+
+      <canvas
+        id="visualizer"
+        class="visualizer"
+      ></canvas>
+
     </div>
 
 
-    <!-- TÍTULO -->
+    <!-- =================================================
+         TÍTULO
+    ================================================== -->
 
     <div
       class="track-title"
-      id="title">
+      id="title"
+    >
+
       Sin canción
+
     </div>
 
 
-    <!-- ARTISTA -->
+    <!-- =================================================
+         ARTISTA
+    ================================================== -->
 
     <div
       class="track-artist"
-      id="artist">
+      id="artist"
+    >
+
       Unknown
+
     </div>
 
 
-    <!-- CONTROLES -->
+    <!-- =================================================
+         CONTROLES
+    ================================================== -->
 
     <div class="controls">
 
+
       <button
         id="prev"
-        title="Anterior">
+        title="Anterior"
+      >
 
         <img
           src="./complements/prev.png"
-          alt="Anterior">
+          alt="Anterior"
+        >
 
       </button>
 
 
       <button
         id="play"
-        title="Reproducir">
+        title="Reproducir"
+      >
 
         <img
           src="./complements/play.png"
-          alt="Reproducir">
+          alt="Reproducir"
+        >
 
       </button>
 
 
       <button
         id="next"
-        title="Siguiente">
+        title="Siguiente"
+      >
 
         <img
           src="./complements/next.png"
-          alt="Siguiente">
+          alt="Siguiente"
+        >
 
       </button>
 
 
       <button
         id="repeat"
-        title="Repetir">
+        title="Repetir"
+      >
 
         <img
           src="./complements/repeat-off.png"
-          alt="Repetición desactivada">
+          alt="Repetición desactivada"
+        >
 
       </button>
+
 
     </div>
 
 
-    <!-- BOTONES DE CARPETA -->
+    <!-- =================================================
+         CARPETA
+    ================================================== -->
 
     <div class="folder-buttons">
 
+
       <button
         id="selectFolderBtn"
-        class="special-btn">
+        class="special-btn"
+      >
 
-    Seleccionar Carpeta
+        Seleccionar Carpeta
 
       </button>
 
@@ -624,23 +797,29 @@ body.has-cover::before {
       <button
         id="installBtn"
         class="special-btn"
-        style="display:none;">
+        style="display:none;"
+      >
 
         ➕ Instalar App
 
       </button>
 
+
     </div>
+
 
   </div>
 
 
-  <!-- PLAYLIST -->
+  <!-- ===================================================
+       PLAYLIST
+  ==================================================== -->
 
   <div id="playlistContainer">
 
     <div
-      style="text-align:center; color:#fff;">
+      style="text-align:center; color:#fff;"
+    >
 
       No hay canciones seleccionadas
 
@@ -649,9 +828,17 @@ body.has-cover::before {
   </div>
 
 
-  <audio id="player"></audio>
+  <!-- ===================================================
+       AUDIO
+  ==================================================== -->
+
+  <audio
+    id="player"
+  ></audio>
+
 
 </div>
+
 
 
 <script>
@@ -663,39 +850,53 @@ body.has-cover::before {
 const player =
   document.getElementById('player');
 
+
 const cover =
   document.getElementById('cover');
+
 
 const title =
   document.getElementById('title');
 
+
 const artist =
   document.getElementById('artist');
+
 
 const playBtn =
   document.getElementById('play');
 
+
 const nextBtn =
   document.getElementById('next');
+
 
 const prevBtn =
   document.getElementById('prev');
 
+
 const repeatBtn =
   document.getElementById('repeat');
+
 
 const folderInput =
   document.getElementById('folderInput');
 
+
 const selectFolderBtn =
   document.getElementById('selectFolderBtn');
+
 
 const playlistContainer =
   document.getElementById('playlistContainer');
 
 
+const visualizerCanvas =
+  document.getElementById('visualizer');
+
+
 /* =====================================================
-   RUTAS DE ICONOS
+   ICONOS
 ===================================================== */
 
 const ICONS = {
@@ -738,256 +939,773 @@ let repeatMode = 'off';
 
 
 /* =====================================================
-   CAMBIAR ICONO
+   AUDIO VISUALIZER
 ===================================================== */
 
-function setButtonIcon(button, src, alt) {
+let audioContext = null;
 
-  const img =
-    button.querySelector('img');
+let analyser = null;
 
-  if (!img) return;
+let sourceNode = null;
 
-  img.src = src;
+let visualizerAnimation = null;
 
-  img.alt = alt;
+
+/* =====================================================
+   INICIALIZAR AUDIO CONTEXT
+===================================================== */
+
+function initializeAudioVisualizer() {
+
+  if (audioContext)
+    return;
+
+
+  try {
+
+    audioContext =
+      new (
+        window.AudioContext ||
+        window.webkitAudioContext
+      )();
+
+
+    analyser =
+      audioContext.createAnalyser();
+
+
+    /*
+      FFT alto para obtener
+      detalle de frecuencias.
+    */
+
+    analyser.fftSize =
+      2048;
+
+
+    analyser.smoothingTimeConstant =
+      0.82;
+
+
+    sourceNode =
+      audioContext.createMediaElementSource(
+        player
+      );
+
+
+    sourceNode.connect(
+      analyser
+    );
+
+
+    analyser.connect(
+      audioContext.destination
+    );
+
+  }
+
+  catch (error) {
+
+    console.warn(
+      'No se pudo inicializar el visualizador:',
+      error
+    );
+
+  }
 
 }
 
 
 /* =====================================================
-   OBTENER COLORES DE LA PORTADA
+   DIBUJAR VISUALIZADOR
 ===================================================== */
 
-function getCoverColors(imageURL) {
+function drawVisualizer() {
 
-  return new Promise((resolve) => {
+  if (
+    !analyser ||
+    !visualizerCanvas
+  ) {
 
-    const img =
-      new Image();
+    return;
+
+  }
+
+
+  const canvas =
+    visualizerCanvas;
+
+
+  const ctx =
+    canvas.getContext(
+      '2d'
+    );
+
+
+  const rect =
+    canvas.getBoundingClientRect();
+
+
+  const dpr =
+    window.devicePixelRatio ||
+    1;
+
+
+  const width =
+    rect.width;
+
+
+  const height =
+    rect.height;
+
+
+  if (
+    canvas.width !==
+    width * dpr
+  ) {
+
+    canvas.width =
+      width * dpr;
+
+  }
+
+
+  if (
+    canvas.height !==
+    height * dpr
+  ) {
+
+    canvas.height =
+      height * dpr;
+
+  }
+
+
+  ctx.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
+
+  /*
+    Limpiar.
+  */
+
+  ctx.clearRect(
+    0,
+    0,
+    width,
+    height
+  );
+
+
+  /*
+    Obtener frecuencias.
+  */
+
+  const bufferLength =
+    analyser.frequencyBinCount;
+
+
+  const dataArray =
+    new Uint8Array(
+      bufferLength
+    );
+
+
+  analyser.getByteFrequencyData(
+    dataArray
+  );
+
+
+  /*
+    ==============================================
+    LÍNEA PRINCIPAL
+    ==============================================
+  */
+
+  ctx.beginPath();
+
+
+  /*
+    CENTRO EXACTO DEL CUADRO
+  */
+
+  const centerY =
+    height / 2;
+
+
+  const points =
+    160;
+
+
+  const sliceWidth =
+    width / (points - 1);
+
+
+  let x = 0;
+
+
+  for (
+    let i = 0;
+    i < points;
+    i++
+  ) {
+
+    const dataIndex =
+      Math.floor(
+        i *
+        (
+          bufferLength /
+          points
+        )
+      );
+
+
+    const value =
+      dataArray[dataIndex] ||
+      0;
+
 
     /*
-      Las imágenes data: no necesitan
-      CORS. Para otros tipos de URL
-      intentamos utilizar CORS.
+      Amplitud principal.
     */
 
+    const amplitude =
+      (
+        value / 255
+      ) * 95;
+
+
+    /*
+      Curva suave que converge
+      hacia el centro.
+    */
+
+    const y =
+      centerY -
+      amplitude *
+      Math.sin(
+        (
+          i /
+          (points - 1)
+        ) *
+        Math.PI
+      );
+
+
     if (
-      !imageURL.startsWith('data:')
+      i === 0
     ) {
 
-      img.crossOrigin = 'Anonymous';
+      ctx.moveTo(
+        x,
+        y
+      );
+
+    }
+
+    else {
+
+      ctx.lineTo(
+        x,
+        y
+      );
 
     }
 
 
-    img.onload = function() {
+    x += sliceWidth;
 
-      try {
+  }
 
-        const canvas =
-          document.createElement(
-            'canvas'
-          );
 
-        const ctx =
-          canvas.getContext(
-            '2d',
-            {
-              willReadFrequently: true
-            }
-          );
+  /*
+    Línea blanca.
+  */
 
+  ctx.lineWidth =
+    2;
 
-        const size = 100;
 
-        canvas.width = size;
+  ctx.strokeStyle =
+    '#ffffff';
 
-        canvas.height = size;
 
+  ctx.shadowColor =
+    'rgba(255,255,255,0.95)';
 
-        ctx.drawImage(
-          img,
-          0,
-          0,
-          size,
-          size
-        );
 
+  ctx.shadowBlur =
+    10;
 
-        const imageData =
-          ctx.getImageData(
-            0,
-            0,
-            size,
-            size
-          ).data;
 
+  ctx.stroke();
 
-        let r = 0;
 
-        let g = 0;
+  /*
+    ==============================================
+    SEGUNDA LÍNEA
+    ==============================================
+  */
 
-        let b = 0;
+  ctx.beginPath();
 
-        let count = 0;
 
+  x = 0;
 
-        /*
-          Promedio de los píxeles.
-        */
 
-        for (
-          let i = 0;
-          i < imageData.length;
-          i += 4
-        ) {
+  for (
+    let i = 0;
+    i < points;
+    i++
+  ) {
 
-          const red =
-            imageData[i];
+    const dataIndex =
+      Math.floor(
+        i *
+        (
+          bufferLength /
+          points
+        )
+      );
 
-          const green =
-            imageData[i + 1];
 
-          const blue =
-            imageData[i + 2];
+    const value =
+      dataArray[dataIndex] ||
+      0;
 
-          const alpha =
-            imageData[i + 3];
 
+    const amplitude =
+      (
+        value / 255
+      ) * 45;
 
-          if (alpha < 100)
-            continue;
 
+    const y =
+      centerY +
+      amplitude *
+      Math.sin(
+        (
+          i /
+          (points - 1)
+        ) *
+        Math.PI
+      );
 
-          r += red;
 
-          g += green;
+    if (
+      i === 0
+    ) {
 
-          b += blue;
+      ctx.moveTo(
+        x,
+        y
+      );
 
-          count++;
+    }
 
-        }
+    else {
 
+      ctx.lineTo(
+        x,
+        y
+      );
 
-        if (!count) {
+    }
 
-          resolve({
-            color1: '#000000',
-            color2: '#000000'
-          });
 
-          return;
+    x += sliceWidth;
 
-        }
+  }
 
 
-        r =
-          Math.round(
-            r / count
-          );
+  ctx.lineWidth =
+    1;
 
-        g =
-          Math.round(
-            g / count
-          );
 
-        b =
-          Math.round(
-            b / count
-          );
+  ctx.strokeStyle =
+    'rgba(255,255,255,0.35)';
 
 
-        /*
-          Color principal.
-        */
+  ctx.shadowColor =
+    'rgba(255,255,255,0.5)';
 
-        const color1 =
-          `rgb(${r},${g},${b})`;
 
+  ctx.shadowBlur =
+    5;
 
-        /*
-          Color secundario oscuro.
-        */
 
-        const r2 =
-          Math.max(
-            0,
-            Math.round(r * 0.45)
-          );
+  ctx.stroke();
 
-        const g2 =
-          Math.max(
-            0,
-            Math.round(g * 0.45)
-          );
 
-        const b2 =
-          Math.max(
-            0,
-            Math.round(b * 0.45)
-          );
+  /*
+    Continuar animación.
+  */
 
-
-        const color2 =
-          `rgb(${r2},${g2},${b2})`;
-
-
-        resolve({
-          color1,
-          color2
-        });
-
-
-      } catch (error) {
-
-        console.warn(
-          'No se pudieron obtener los colores de la portada:',
-          error
-        );
-
-
-        resolve({
-          color1: '#000000',
-          color2: '#000000'
-        });
-
-      }
-
-    };
-
-
-    img.onerror = function() {
-
-      resolve({
-        color1: '#000000',
-        color2: '#000000'
-      });
-
-    };
-
-
-    img.src = imageURL;
-
-  });
+  visualizerAnimation =
+    requestAnimationFrame(
+      drawVisualizer
+    );
 
 }
 
 
 /* =====================================================
-   CAMBIAR FONDO DINÁMICO
+   INICIAR VISUALIZADOR
 ===================================================== */
 
-async function updateBackground(imageURL) {
+function startVisualizer() {
 
-  /*
-    SIN PORTADA
-    ================================
-    Fondo completamente negro.
-  */
+  initializeAudioVisualizer();
 
-  if (!imageURL) {
+
+  if (
+    audioContext &&
+    audioContext.state ===
+    'suspended'
+  ) {
+
+    audioContext.resume();
+
+  }
+
+
+  if (
+    !visualizerAnimation
+  ) {
+
+    drawVisualizer();
+
+  }
+
+}
+
+
+/* =====================================================
+   DETENER VISUALIZADOR
+===================================================== */
+
+function stopVisualizer() {
+
+  if (
+    visualizerAnimation
+  ) {
+
+    cancelAnimationFrame(
+      visualizerAnimation
+    );
+
+    visualizerAnimation =
+      null;
+
+  }
+
+}
+
+
+/* =====================================================
+   CAMBIAR ICONO
+===================================================== */
+
+function setButtonIcon(
+  button,
+  src,
+  alt
+) {
+
+  const img =
+    button.querySelector(
+      'img'
+    );
+
+
+  if (!img)
+    return;
+
+
+  img.src =
+    src;
+
+
+  img.alt =
+    alt;
+
+}
+
+
+/* =====================================================
+   OBTENER COLORES DE PORTADA
+===================================================== */
+
+function getCoverColors(
+  imageURL
+) {
+
+  return new Promise(
+    (resolve) => {
+
+      const img =
+        new Image();
+
+
+      if (
+        !imageURL.startsWith(
+          'data:'
+        )
+      ) {
+
+        img.crossOrigin =
+          'Anonymous';
+
+      }
+
+
+      img.onload =
+        function() {
+
+          try {
+
+            const canvas =
+              document.createElement(
+                'canvas'
+              );
+
+
+            const ctx =
+              canvas.getContext(
+                '2d',
+                {
+                  willReadFrequently:
+                    true
+                }
+              );
+
+
+            const size =
+              100;
+
+
+            canvas.width =
+              size;
+
+
+            canvas.height =
+              size;
+
+
+            ctx.drawImage(
+              img,
+              0,
+              0,
+              size,
+              size
+            );
+
+
+            const imageData =
+              ctx.getImageData(
+                0,
+                0,
+                size,
+                size
+              ).data;
+
+
+            let r = 0;
+
+            let g = 0;
+
+            let b = 0;
+
+            let count = 0;
+
+
+            for (
+              let i = 0;
+              i <
+              imageData.length;
+              i += 4
+            ) {
+
+              const red =
+                imageData[i];
+
+
+              const green =
+                imageData[i + 1];
+
+
+              const blue =
+                imageData[i + 2];
+
+
+              const alpha =
+                imageData[i + 3];
+
+
+              if (
+                alpha < 100
+              )
+                continue;
+
+
+              r += red;
+
+              g += green;
+
+              b += blue;
+
+              count++;
+
+            }
+
+
+            if (
+              !count
+            ) {
+
+              resolve({
+
+                color1:
+                  '#000000',
+
+                color2:
+                  '#000000'
+
+              });
+
+              return;
+
+            }
+
+
+            r =
+              Math.round(
+                r / count
+              );
+
+
+            g =
+              Math.round(
+                g / count
+              );
+
+
+            b =
+              Math.round(
+                b / count
+              );
+
+
+            const color1 =
+              `rgb(${r},${g},${b})`;
+
+
+            const r2 =
+              Math.max(
+                0,
+                Math.round(
+                  r * 0.45
+                )
+              );
+
+
+            const g2 =
+              Math.max(
+                0,
+                Math.round(
+                  g * 0.45
+                )
+              );
+
+
+            const b2 =
+              Math.max(
+                0,
+                Math.round(
+                  b * 0.45
+                )
+              );
+
+
+            const color2 =
+              `rgb(${r2},${g2},${b2})`;
+
+
+            resolve({
+
+              color1,
+
+              color2
+
+            });
+
+          }
+
+          catch (error) {
+
+            console.warn(
+              'No se pudieron obtener los colores:',
+              error
+            );
+
+
+            resolve({
+
+              color1:
+                '#000000',
+
+              color2:
+                '#000000'
+
+            });
+
+          }
+
+        };
+
+
+      img.onerror =
+        function() {
+
+          resolve({
+
+            color1:
+              '#000000',
+
+            color2:
+              '#000000'
+
+          });
+
+        };
+
+
+      img.src =
+        imageURL;
+
+    }
+  );
+
+}
+
+
+/* =====================================================
+   FONDO DINÁMICO
+===================================================== */
+
+async function updateBackground(
+  imageURL
+) {
+
+  if (
+    !imageURL
+  ) {
 
     document.documentElement
       .style
@@ -1015,7 +1733,9 @@ async function updateBackground(imageURL) {
 
     document.body
       .classList
-      .remove('has-cover');
+      .remove(
+        'has-cover'
+      );
 
 
     document.body.style.background =
@@ -1027,19 +1747,11 @@ async function updateBackground(imageURL) {
   }
 
 
-  /*
-    OBTENER COLORES
-  */
-
   const colors =
     await getCoverColors(
       imageURL
     );
 
-
-  /*
-    Aplicar colores al fondo.
-  */
 
   document.documentElement
     .style
@@ -1057,11 +1769,6 @@ async function updateBackground(imageURL) {
     );
 
 
-  /*
-    Portada para el fondo
-    difuminado.
-  */
-
   document.documentElement
     .style
     .setProperty(
@@ -1070,18 +1777,12 @@ async function updateBackground(imageURL) {
     );
 
 
-  /*
-    Activar fondo de portada.
-  */
-
   document.body
     .classList
-    .add('has-cover');
+    .add(
+      'has-cover'
+    );
 
-
-  /*
-    Degradado dinámico.
-  */
 
   document.body.style.background =
     `linear-gradient(
@@ -1094,29 +1795,145 @@ async function updateBackground(imageURL) {
 
 
 /* =====================================================
+   PORTADA IMPROVISADA
+===================================================== */
+
+function showNoCover() {
+
+  cover
+    .classList
+    .add(
+      'no-cover'
+    );
+
+
+  cover
+    .classList
+    .remove(
+      'real-cover'
+    );
+
+
+  cover.style.backgroundImage =
+    'none';
+
+
+  if (
+    isPlaying
+  ) {
+
+    startVisualizer();
+
+  }
+
+}
+
+
+/* =====================================================
+   PORTADA REAL
+===================================================== */
+
+function showRealCover(
+  imageURL
+) {
+
+  cover
+    .classList
+    .remove(
+      'no-cover'
+    );
+
+
+  cover
+    .classList
+    .add(
+      'real-cover'
+    );
+
+
+  cover.style.backgroundImage =
+    `url("${imageURL}")`;
+
+
+  stopVisualizer();
+
+}
+
+
+/* =====================================================
    REPRODUCIR
 ===================================================== */
 
 function playTrack() {
 
-  player.play();
-
-  isPlaying = true;
-
-
-  setButtonIcon(
-    playBtn,
-    ICONS.pause,
-    'Pausar'
-  );
+  if (
+    !playlist.length
+  )
+    return;
 
 
-  cover.classList.add(
-    'playing'
-  );
+  initializeAudioVisualizer();
 
 
-  updatePlaylistUI();
+  if (
+    audioContext &&
+    audioContext.state ===
+    'suspended'
+  ) {
+
+    audioContext.resume();
+
+  }
+
+
+  player.play()
+    .then(
+      () => {
+
+        isPlaying =
+          true;
+
+
+        setButtonIcon(
+          playBtn,
+          ICONS.pause,
+          'Pausar'
+        );
+
+
+        cover.classList.add(
+          'playing'
+        );
+
+
+        /*
+          Visualizador solamente
+          cuando no hay portada.
+        */
+
+        if (
+          !playlist[currentIndex].cover
+        ) {
+
+          startVisualizer();
+
+        }
+
+
+        updatePlaylistUI();
+
+      }
+    )
+    .catch(
+      error => {
+
+        console.warn(
+          'No se pudo reproducir:',
+          error
+        );
+
+      }
+    );
 
 }
 
@@ -1129,7 +1946,9 @@ function pauseTrack() {
 
   player.pause();
 
-  isPlaying = false;
+
+  isPlaying =
+    false;
 
 
   setButtonIcon(
@@ -1144,6 +1963,9 @@ function pauseTrack() {
   );
 
 
+  stopVisualizer();
+
+
   updatePlaylistUI();
 
 }
@@ -1153,7 +1975,9 @@ function pauseTrack() {
    CARGAR CANCIÓN
 ===================================================== */
 
-function loadTrack(index) {
+function loadTrack(
+  index
+) {
 
   const file =
     playlist[index];
@@ -1163,22 +1987,15 @@ function loadTrack(index) {
     return;
 
 
-  /*
-    URL del audio.
-  */
-
   const url =
     URL.createObjectURL(
       file.file
     );
 
 
-  player.src = url;
+  player.src =
+    url;
 
-
-  /*
-    Información.
-  */
 
   title.textContent =
     file.title;
@@ -1192,10 +2009,13 @@ function loadTrack(index) {
     PORTADA
   */
 
-  if (file.cover) {
+  if (
+    file.cover
+  ) {
 
-    cover.style.backgroundImage =
-      `url("${file.cover}")`;
+    showRealCover(
+      file.cover
+    );
 
 
     updateBackground(
@@ -1206,13 +2026,7 @@ function loadTrack(index) {
 
   else {
 
-    /*
-      SIN PORTADA:
-      negro sólido.
-    */
-
-    cover.style.backgroundImage =
-      'none';
+    showNoCover();
 
 
     updateBackground(
@@ -1231,7 +2045,9 @@ function loadTrack(index) {
     MEDIA SESSION
   */
 
-  if ('mediaSession' in navigator) {
+  if (
+    'mediaSession' in navigator
+  ) {
 
     navigator.mediaSession.metadata =
       new MediaMetadata({
@@ -1249,6 +2065,7 @@ function loadTrack(index) {
           file.cover
             ? [
                 {
+
                   src:
                     file.cover,
 
@@ -1257,6 +2074,7 @@ function loadTrack(index) {
 
                   type:
                     'image/jpeg'
+
                 }
               ]
             : []
@@ -1266,13 +2084,15 @@ function loadTrack(index) {
 
     navigator.mediaSession.setActionHandler(
       'play',
-      () => playTrack()
+      () =>
+        playTrack()
     );
 
 
     navigator.mediaSession.setActionHandler(
       'pause',
-      () => pauseTrack()
+      () =>
+        pauseTrack()
     );
 
 
@@ -1326,14 +2146,16 @@ function loadTrack(index) {
 
 
 /* =====================================================
-   BOTÓN PLAY / PAUSA
+   PLAY / PAUSA
 ===================================================== */
 
 playBtn.addEventListener(
   'click',
   () => {
 
-    if (isPlaying) {
+    if (
+      isPlaying
+    ) {
 
       pauseTrack();
 
@@ -1410,15 +2232,13 @@ repeatBtn.addEventListener(
   'click',
   () => {
 
-    /*
-      OFF → ALL
-    */
-
     if (
-      repeatMode === 'off'
+      repeatMode ===
+      'off'
     ) {
 
-      repeatMode = 'all';
+      repeatMode =
+        'all';
 
 
       setButtonIcon(
@@ -1429,16 +2249,13 @@ repeatBtn.addEventListener(
 
     }
 
-
-    /*
-      ALL → ONE
-    */
-
     else if (
-      repeatMode === 'all'
+      repeatMode ===
+      'all'
     ) {
 
-      repeatMode = 'one';
+      repeatMode =
+        'one';
 
 
       setButtonIcon(
@@ -1449,14 +2266,10 @@ repeatBtn.addEventListener(
 
     }
 
-
-    /*
-      ONE → OFF
-    */
-
     else {
 
-      repeatMode = 'off';
+      repeatMode =
+        'off';
 
 
       setButtonIcon(
@@ -1479,25 +2292,19 @@ player.addEventListener(
   'ended',
   () => {
 
-    switch (repeatMode) {
-
-
-      /*
-        REPETIR UNA
-      */
+    switch (
+      repeatMode
+    ) {
 
       case 'one':
 
-        player.currentTime = 0;
+        player.currentTime =
+          0;
 
         playTrack();
 
         break;
 
-
-      /*
-        REPETIR TODAS
-      */
 
       case 'all':
 
@@ -1517,10 +2324,6 @@ player.addEventListener(
 
         break;
 
-
-      /*
-        SIN REPETICIÓN
-      */
 
       case 'off':
 
@@ -1590,19 +2393,17 @@ folderInput.addEventListener(
       .map(
         f => ({
 
-          file: f,
+          file:
+            f,
 
-          title: f.name,
+          title:
+            f.name,
 
           artist:
             'Desconocido',
 
-          /*
-            Todavía no sabemos
-            si tiene portada.
-          */
-
-          cover: null
+          cover:
+            null
 
         })
       );
@@ -1620,16 +2421,12 @@ folderInput.addEventListener(
     );
 
 
-    /*
-      Empezamos por la primera.
-    */
-
-    currentIndex = 0;
+    currentIndex =
+      0;
 
 
     /*
-      Analizar metadata de cada
-      canción.
+      Leer metadata.
     */
 
     playlist.forEach(
@@ -1641,7 +2438,6 @@ folderInput.addEventListener(
 
             onSuccess:
               function(tag) {
-
 
                 /*
                   TÍTULO
@@ -1679,15 +2475,14 @@ folderInput.addEventListener(
                   tag.tags.picture
                 ) {
 
-                  let base64 = '';
+                  let base64 =
+                    '';
 
 
                   for (
                     let i = 0;
-
                     i <
                     tag.tags.picture.data.length;
-
                     i++
                   ) {
 
@@ -1704,16 +2499,17 @@ folderInput.addEventListener(
 
 
                   /*
-                    Si es la canción actual,
-                    actualizar portada y fondo.
+                    Si es la canción actual.
                   */
 
                   if (
-                    index === currentIndex
+                    index ===
+                    currentIndex
                   ) {
 
-                    cover.style.backgroundImage =
-                      `url("${song.cover}")`;
+                    showRealCover(
+                      song.cover
+                    );
 
 
                     updateBackground(
@@ -1721,6 +2517,15 @@ folderInput.addEventListener(
                     );
 
                   }
+
+                }
+
+                else if (
+                  index ===
+                  currentIndex
+                ) {
+
+                  showNoCover();
 
                 }
 
@@ -1733,13 +2538,12 @@ folderInput.addEventListener(
             onError:
               function() {
 
-                /*
-                  Sin metadata válida.
-                */
-
                 if (
-                  index === currentIndex
+                  index ===
+                  currentIndex
                 ) {
+
+                  showNoCover();
 
                   updateBackground(
                     null
@@ -1760,15 +2564,16 @@ folderInput.addEventListener(
 
 
     /*
-      Si encontramos canciones,
-      cargar la primera.
+      Cargar primera canción.
     */
 
     if (
       playlist.length
     ) {
 
-      loadTrack(0);
+      loadTrack(
+        0
+      );
 
       playTrack();
 
@@ -1791,10 +2596,6 @@ function updatePlaylistUI() {
     '';
 
 
-  /*
-    Sin canciones.
-  */
-
   if (
     !playlist.length
   ) {
@@ -1806,10 +2607,6 @@ function updatePlaylistUI() {
 
   }
 
-
-  /*
-    Crear cada canción.
-  */
 
   playlist.forEach(
     (song,i) => {
@@ -1823,7 +2620,8 @@ function updatePlaylistUI() {
       div.className =
         'playlist-item' +
         (
-          i === currentIndex
+          i ===
+          currentIndex
             ? ' active'
             : ''
         );
@@ -1851,24 +2649,59 @@ function updatePlaylistUI() {
       else {
 
         /*
-          Cuadro negro cuando
-          no existe portada.
+          Mini portada improvisada.
         */
 
         img.src =
           'data:image/svg+xml,' +
           encodeURIComponent(`
+
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="40"
-              height="40">
+              height="40"
+              viewBox="0 0 40 40"
+            >
 
               <rect
                 width="40"
                 height="40"
-                fill="#000"/>
+                fill="#000"
+              />
+
+              <circle
+                cx="20"
+                cy="20"
+                r="10"
+                fill="none"
+                stroke="#fff"
+                stroke-width="1"
+                opacity="0.8"
+              />
+
+              <path
+                d="M20 12 V27"
+                stroke="#fff"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+
+              <circle
+                cx="17"
+                cy="29"
+                r="3"
+                fill="#fff"
+              />
+
+              <circle
+                cx="27"
+                cy="29"
+                r="3"
+                fill="#fff"
+              />
 
             </svg>
+
           `);
 
       }
@@ -1916,13 +2749,24 @@ function updatePlaylistUI() {
         song.artist;
 
 
-      text.appendChild(t);
+      text.appendChild(
+        t
+      );
 
-      text.appendChild(a);
 
-      div.appendChild(img);
+      text.appendChild(
+        a
+      );
 
-      div.appendChild(text);
+
+      div.appendChild(
+        img
+      );
+
+
+      div.appendChild(
+        text
+      );
 
 
       /*
@@ -1933,9 +2777,12 @@ function updatePlaylistUI() {
         'click',
         () => {
 
-          currentIndex = i;
+          currentIndex =
+            i;
 
-          loadTrack(i);
+          loadTrack(
+            i
+          );
 
           playTrack();
 
@@ -1951,6 +2798,38 @@ function updatePlaylistUI() {
   );
 
 }
+
+
+/* =====================================================
+   REDIMENSIONAR VISUALIZADOR
+===================================================== */
+
+window.addEventListener(
+  'resize',
+  () => {
+
+    if (
+      !isPlaying
+    )
+      return;
+
+
+    if (
+      !playlist.length
+    )
+      return;
+
+
+    if (
+      !playlist[currentIndex].cover
+    ) {
+
+      drawVisualizer();
+
+    }
+
+  }
+);
 
 
 /* =====================================================
@@ -1971,9 +2850,8 @@ setButtonIcon(
 );
 
 
-/*
-  Fondo negro inicial.
-*/
+showNoCover();
+
 
 updateBackground(
   null
