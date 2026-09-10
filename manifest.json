@@ -8,12 +8,12 @@
   "description": "Prueba la Nueva App para tu dispositivo movil, solo recuerda tener acceso a internet.",
   "icons": [
     {
-      "src": "XSIFAI.png",
+      "src": "XSAPP.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "XSIFAI.png",
+      "src": "XSAPP.png",
       "sizes": "512x512",
       "type": "image/png"
     }
