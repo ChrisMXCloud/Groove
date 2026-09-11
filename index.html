@@ -192,6 +192,8 @@ body.has-cover::before {
 
   background-position: center;
 
+  background-repeat: no-repeat;
+
   margin-bottom: 20px;
 
   box-shadow:
@@ -219,52 +221,19 @@ body.has-cover::before {
 
 
 /* =====================================================
-   VISUALIZADOR
-===================================================== */
-
-.visualizer {
-
-  position: absolute;
-
-  left: 0;
-
-  top: 0;
-
-  width: 100%;
-
-  height: 100%;
-
-  display: none;
-
-  pointer-events: none;
-
-}
-
-
-/* =====================================================
    PORTADA IMPROVISADA
 ===================================================== */
 
 .cover.no-cover {
 
-  background:
-    radial-gradient(
-      circle at center,
-      #222 0%,
-      #080808 45%,
-      #000 100%
-    );
+  background-image:
+    url("./MNC.png");
 
-}
+  background-size: cover;
 
+  background-position: center;
 
-/* =====================================================
-   VISUALIZADOR ACTIVO
-===================================================== */
-
-.cover.no-cover .visualizer {
-
-  display: block;
+  background-repeat: no-repeat;
 
 }
 
@@ -668,14 +637,7 @@ body.has-cover::before {
     <div
       class="cover no-cover"
       id="cover"
-    >
-
-      <canvas
-        id="visualizer"
-        class="visualizer"
-      ></canvas>
-
-    </div>
+    ></div>
 
 
     <!-- =================================================
@@ -891,8 +853,12 @@ const playlistContainer =
   document.getElementById('playlistContainer');
 
 
-const visualizerCanvas =
-  document.getElementById('visualizer');
+/* =====================================================
+   PORTADA POR DEFECTO
+===================================================== */
+
+const DEFAULT_COVER =
+  './MNC.png';
 
 
 /* =====================================================
@@ -936,476 +902,6 @@ let currentIndex = 0;
 let isPlaying = false;
 
 let repeatMode = 'off';
-
-
-/* =====================================================
-   AUDIO VISUALIZER
-===================================================== */
-
-let audioContext = null;
-
-let analyser = null;
-
-let sourceNode = null;
-
-let visualizerAnimation = null;
-
-
-/* =====================================================
-   INICIALIZAR AUDIO CONTEXT
-===================================================== */
-
-function initializeAudioVisualizer() {
-
-  if (audioContext)
-    return;
-
-
-  try {
-
-    audioContext =
-      new (
-        window.AudioContext ||
-        window.webkitAudioContext
-      )();
-
-
-    analyser =
-      audioContext.createAnalyser();
-
-
-    /*
-      FFT alto para obtener
-      detalle de frecuencias.
-    */
-
-    analyser.fftSize =
-      2048;
-
-
-    analyser.smoothingTimeConstant =
-      0.82;
-
-
-    sourceNode =
-      audioContext.createMediaElementSource(
-        player
-      );
-
-
-    sourceNode.connect(
-      analyser
-    );
-
-
-    analyser.connect(
-      audioContext.destination
-    );
-
-  }
-
-  catch (error) {
-
-    console.warn(
-      'No se pudo inicializar el visualizador:',
-      error
-    );
-
-  }
-
-}
-
-
-/* =====================================================
-   DIBUJAR VISUALIZADOR
-===================================================== */
-
-function drawVisualizer() {
-
-  if (
-    !analyser ||
-    !visualizerCanvas
-  ) {
-
-    return;
-
-  }
-
-
-  const canvas =
-    visualizerCanvas;
-
-
-  const ctx =
-    canvas.getContext(
-      '2d'
-    );
-
-
-  const rect =
-    canvas.getBoundingClientRect();
-
-
-  const dpr =
-    window.devicePixelRatio ||
-    1;
-
-
-  const width =
-    rect.width;
-
-
-  const height =
-    rect.height;
-
-
-  if (
-    canvas.width !==
-    width * dpr
-  ) {
-
-    canvas.width =
-      width * dpr;
-
-  }
-
-
-  if (
-    canvas.height !==
-    height * dpr
-  ) {
-
-    canvas.height =
-      height * dpr;
-
-  }
-
-
-  ctx.setTransform(
-    dpr,
-    0,
-    0,
-    dpr,
-    0,
-    0
-  );
-
-
-  /*
-    Limpiar.
-  */
-
-  ctx.clearRect(
-    0,
-    0,
-    width,
-    height
-  );
-
-
-  /*
-    Obtener frecuencias.
-  */
-
-  const bufferLength =
-    analyser.frequencyBinCount;
-
-
-  const dataArray =
-    new Uint8Array(
-      bufferLength
-    );
-
-
-  analyser.getByteFrequencyData(
-    dataArray
-  );
-
-
-  /*
-    ==============================================
-    LÍNEA PRINCIPAL
-    ==============================================
-  */
-
-  ctx.beginPath();
-
-
-  /*
-    CENTRO EXACTO DEL CUADRO
-  */
-
-  const centerY =
-    height / 2;
-
-
-  const points =
-    160;
-
-
-  const sliceWidth =
-    width / (points - 1);
-
-
-  let x = 0;
-
-
-  for (
-    let i = 0;
-    i < points;
-    i++
-  ) {
-
-    const dataIndex =
-      Math.floor(
-        i *
-        (
-          bufferLength /
-          points
-        )
-      );
-
-
-    const value =
-      dataArray[dataIndex] ||
-      0;
-
-
-    /*
-      Amplitud principal.
-    */
-
-    const amplitude =
-      (
-        value / 255
-      ) * 95;
-
-
-    /*
-      Curva suave que converge
-      hacia el centro.
-    */
-
-    const y =
-      centerY -
-      amplitude *
-      Math.sin(
-        (
-          i /
-          (points - 1)
-        ) *
-        Math.PI
-      );
-
-
-    if (
-      i === 0
-    ) {
-
-      ctx.moveTo(
-        x,
-        y
-      );
-
-    }
-
-    else {
-
-      ctx.lineTo(
-        x,
-        y
-      );
-
-    }
-
-
-    x += sliceWidth;
-
-  }
-
-
-  /*
-    Línea blanca.
-  */
-
-  ctx.lineWidth =
-    2;
-
-
-  ctx.strokeStyle =
-    '#ffffff';
-
-
-  ctx.shadowColor =
-    'rgba(255,255,255,0.95)';
-
-
-  ctx.shadowBlur =
-    10;
-
-
-  ctx.stroke();
-
-
-  /*
-    ==============================================
-    SEGUNDA LÍNEA
-    ==============================================
-  */
-
-  ctx.beginPath();
-
-
-  x = 0;
-
-
-  for (
-    let i = 0;
-    i < points;
-    i++
-  ) {
-
-    const dataIndex =
-      Math.floor(
-        i *
-        (
-          bufferLength /
-          points
-        )
-      );
-
-
-    const value =
-      dataArray[dataIndex] ||
-      0;
-
-
-    const amplitude =
-      (
-        value / 255
-      ) * 45;
-
-
-    const y =
-      centerY +
-      amplitude *
-      Math.sin(
-        (
-          i /
-          (points - 1)
-        ) *
-        Math.PI
-      );
-
-
-    if (
-      i === 0
-    ) {
-
-      ctx.moveTo(
-        x,
-        y
-      );
-
-    }
-
-    else {
-
-      ctx.lineTo(
-        x,
-        y
-      );
-
-    }
-
-
-    x += sliceWidth;
-
-  }
-
-
-  ctx.lineWidth =
-    1;
-
-
-  ctx.strokeStyle =
-    'rgba(255,255,255,0.35)';
-
-
-  ctx.shadowColor =
-    'rgba(255,255,255,0.5)';
-
-
-  ctx.shadowBlur =
-    5;
-
-
-  ctx.stroke();
-
-
-  /*
-    Continuar animación.
-  */
-
-  visualizerAnimation =
-    requestAnimationFrame(
-      drawVisualizer
-    );
-
-}
-
-
-/* =====================================================
-   INICIAR VISUALIZADOR
-===================================================== */
-
-function startVisualizer() {
-
-  initializeAudioVisualizer();
-
-
-  if (
-    audioContext &&
-    audioContext.state ===
-    'suspended'
-  ) {
-
-    audioContext.resume();
-
-  }
-
-
-  if (
-    !visualizerAnimation
-  ) {
-
-    drawVisualizer();
-
-  }
-
-}
-
-
-/* =====================================================
-   DETENER VISUALIZADOR
-===================================================== */
-
-function stopVisualizer() {
-
-  if (
-    visualizerAnimation
-  ) {
-
-    cancelAnimationFrame(
-      visualizerAnimation
-    );
-
-    visualizerAnimation =
-      null;
-
-  }
-
-}
 
 
 /* =====================================================
@@ -1469,6 +965,15 @@ function getCoverColors(
         function() {
 
           try {
+
+            /*
+              Este canvas solamente se utiliza
+              momentáneamente para obtener el
+              color promedio de la portada.
+
+              No es un visualizador ni funciona
+              continuamente.
+            */
 
             const canvas =
               document.createElement(
@@ -1703,6 +1208,11 @@ async function updateBackground(
   imageURL
 ) {
 
+  /*
+    Sin portada real:
+    fondo completamente negro.
+  */
+
   if (
     !imageURL
   ) {
@@ -1795,7 +1305,7 @@ async function updateBackground(
 
 
 /* =====================================================
-   PORTADA IMPROVISADA
+   PORTADA SIN IMAGEN
 ===================================================== */
 
 function showNoCover() {
@@ -1815,16 +1325,7 @@ function showNoCover() {
 
 
   cover.style.backgroundImage =
-    'none';
-
-
-  if (
-    isPlaying
-  ) {
-
-    startVisualizer();
-
-  }
+    `url("${DEFAULT_COVER}")`;
 
 }
 
@@ -1854,9 +1355,6 @@ function showRealCover(
   cover.style.backgroundImage =
     `url("${imageURL}")`;
 
-
-  stopVisualizer();
-
 }
 
 
@@ -1870,20 +1368,6 @@ function playTrack() {
     !playlist.length
   )
     return;
-
-
-  initializeAudioVisualizer();
-
-
-  if (
-    audioContext &&
-    audioContext.state ===
-    'suspended'
-  ) {
-
-    audioContext.resume();
-
-  }
 
 
   player.play()
@@ -1904,20 +1388,6 @@ function playTrack() {
         cover.classList.add(
           'playing'
         );
-
-
-        /*
-          Visualizador solamente
-          cuando no hay portada.
-        */
-
-        if (
-          !playlist[currentIndex].cover
-        ) {
-
-          startVisualizer();
-
-        }
 
 
         updatePlaylistUI();
@@ -1961,9 +1431,6 @@ function pauseTrack() {
   cover.classList.remove(
     'playing'
   );
-
-
-  stopVisualizer();
 
 
   updatePlaylistUI();
@@ -2062,22 +1529,23 @@ function loadTrack(
           'XtremeSound Play',
 
         artwork:
-          file.cover
-            ? [
-                {
+          [
 
-                  src:
-                    file.cover,
+            {
 
-                  sizes:
-                    '512x512',
+              src:
+                file.cover ||
+                DEFAULT_COVER,
 
-                  type:
-                    'image/jpeg'
+              sizes:
+                '512x512',
 
-                }
-              ]
-            : []
+              type:
+                'image/png'
+
+            }
+
+          ]
 
       });
 
@@ -2527,6 +1995,10 @@ folderInput.addEventListener(
 
                   showNoCover();
 
+                  updateBackground(
+                    null
+                  );
+
                 }
 
 
@@ -2637,74 +2109,23 @@ function updatePlaylistUI() {
         );
 
 
-      if (
+      /*
+        Si existe portada real,
+        utilizarla.
+
+        Si no existe,
+        utilizar MNC.png.
+      */
+
+      img.src =
+        song.cover ||
+        DEFAULT_COVER;
+
+
+      img.alt =
         song.cover
-      ) {
-
-        img.src =
-          song.cover;
-
-      }
-
-      else {
-
-        /*
-          Mini portada improvisada.
-        */
-
-        img.src =
-          'data:image/svg+xml,' +
-          encodeURIComponent(`
-
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="40"
-              height="40"
-              viewBox="0 0 40 40"
-            >
-
-              <rect
-                width="40"
-                height="40"
-                fill="#000"
-              />
-
-              <circle
-                cx="20"
-                cy="20"
-                r="10"
-                fill="none"
-                stroke="#fff"
-                stroke-width="1"
-                opacity="0.8"
-              />
-
-              <path
-                d="M20 12 V27"
-                stroke="#fff"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-
-              <circle
-                cx="17"
-                cy="29"
-                r="3"
-                fill="#fff"
-              />
-
-              <circle
-                cx="27"
-                cy="29"
-                r="3"
-                fill="#fff"
-              />
-
-            </svg>
-
-          `);
-
-      }
+          ? `Portada de ${song.title}`
+          : 'XtremeSound Play';
 
 
       /*
@@ -2798,38 +2219,6 @@ function updatePlaylistUI() {
   );
 
 }
-
-
-/* =====================================================
-   REDIMENSIONAR VISUALIZADOR
-===================================================== */
-
-window.addEventListener(
-  'resize',
-  () => {
-
-    if (
-      !isPlaying
-    )
-      return;
-
-
-    if (
-      !playlist.length
-    )
-      return;
-
-
-    if (
-      !playlist[currentIndex].cover
-    ) {
-
-      drawVisualizer();
-
-    }
-
-  }
-);
 
 
 /* =====================================================
